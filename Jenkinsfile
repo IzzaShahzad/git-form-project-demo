@@ -32,19 +32,25 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                echo '🚀 Deploying project locally...'
-                script {
-                    def deployDir = 'deploy'
+    steps {
+        echo '🚀 Deploying project locally...'
+        script {
+            def deployDir = 'deploy'
 
-                    // Windows commands use 'bat' instead of 'sh'
-                    bat "if not exist ${deployDir} mkdir ${deployDir}"
-                    bat "xcopy * ${deployDir}\\ /E /I /Y"
+            // Create deploy folder if not exists
+            bat "if not exist ${deployDir} mkdir ${deployDir}"
 
-                    echo "✅ Project deployed to folder: ${deployDir}"
-                }
-            }
+            // Copy only html, css, js files (avoid copying deploy folder itself)
+            bat "xcopy *.html ${deployDir}\\ /Y"
+            bat "xcopy *.css ${deployDir}\\ /Y"
+            bat "xcopy *.js ${deployDir}\\ /Y"
+
+            echo "✅ Project deployed successfully to folder: ${deployDir}"
         }
+    }
+}
+
+        
     }
 
     post {
